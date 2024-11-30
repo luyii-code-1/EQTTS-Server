@@ -114,14 +114,14 @@ if type_newest == "reviewed":
     saytype_newest = "正式测定"
 else:
     saytype_newest = "自动测定"   
-tmp2 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+',预估最大烈度'+intensity_newest+'度.'
+tmp2 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
 if 语言组织 == tmp2:
     new = 0
     print("no new ,wait 1s")
     time.sleep(1)
 else:
     new = 1
-语言组织 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+',预估最大烈度'+intensity_newest+'度.'
+语言组织 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
 
 def get_cenc():
     print("请求API...")
@@ -147,14 +147,14 @@ def jiexi():
         saytype_newest = "正式测定"
     else:
         saytype_newest = "自动测定"   
-    tmp2 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+',预估最大烈度'+intensity_newest+'度.'
+    tmp2 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
     #if 语言组织 == tmp2:#屎山04
     #    new = 0
     #   print("no new ,wait 1s")
      #   time.sleep(1)
     #else:
     new = 1
-    语言组织 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
+    语言组织 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级级,预估最大烈度'+intensity_newest+'度.'
     
 
 def getTTS(text):
@@ -184,5 +184,6 @@ def new_func(语言组织, get_cenc, jiexi, getTTS):
         get_cenc()
         jiexi()
         getTTS(语言组织)
+        time.sleep(2)
 ######这里才是程序开始######
 new_func(语言组织, get_cenc, jiexi, getTTS)
