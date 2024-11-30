@@ -98,10 +98,11 @@ def jiexi():
     语言组织 = "中国地震台网",saytype_newest,",震中在",location_newest,",规模",magnitude_newest,",预估最大烈度",intensity_newest,"度."
     print(语言组织)
 
-def getTTS():
+def getTTS(text):
     print("获取朗读音频...")
-    com_t1 = "edge-tts --voice zh-CN-YunyangNeural --text  ",语言组织,"  --write-media tts.mp3"
-    os.system(str(com_t1))
+    # 使用双引号包裹 text，并转义其中的双引号
+    com_t1 = 'edge-tts --voice zh-CN-YunyangNeural --text "{text_escaped}" --write-media tts.mp3' 
+    os.system(com_t1) 
 
 def checkold():#屎山03
     print("检查历史缓存")#屎山03
@@ -164,4 +165,4 @@ print(语言组织)
 print("启动服务")
 get_cenc()
 jiexi()
-getTTS()
+getTTS(语言组织)
