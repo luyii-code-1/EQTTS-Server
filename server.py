@@ -1,189 +1,106 @@
 import requests
 import os
 import time
+import json
+from datetime import datetime, timedelta
 
-##                            _ooOoo_
-##                           o8888888o
-##                           88" . "88
-##                           (| -_- |)
-##                            O\ = /O
-##                        ____/`---'\____
-##                      .   ' \\| |// `.
-##                       / \\||| : |||// \
-##                     / _||||| -:- |||||- \
-##                       | | \\\ - /// | |
-##                     | \_| ''\---/'' | |
-##                      \ .-\__ `-` ___/-. /
-##                   ___`. .' /--.--\ `. . __
-##                ."" '< `.___\_<|>_/___.' >'"".
-##               | | : `- \`.;`\ _ /`;.`/ - ` : | |
-##                 \ \ `-. \_ __\ /__ _/ .-` / /
-##         ======`-.____`-.___\_____/___.-`____.-'======
-##                            `=---='
-##
-##         .............................................
-##                  佛祖镇楼                  
-##          佛曰:
-##                  写字楼里写字间，写字间里程序员；
-##                  程序人员写程序，又拿程序换酒钱。
-##                酒醒只在网上坐，酒醉还来网下眠；
-##                  酒醉酒醒日复日，网上网下年复年。
-##                  但愿老死电脑间，不愿鞠躬老板前；
-##                  奔驰宝马贵者趣，公交自行程序员。
-##                  别人笑我忒疯癫，我笑自己命太贱；
-##                  不见满街漂亮妹，哪个归得程序员？
+# 定义常量
+URL_CENC = "https://api.wolfx.jp/cenc_eqlist.json"
+LANGUAGE_KEY = 'No1'
+TTS_FILE = "tts.mp3"
+STATUS_FILE = "status.json"
 
+# 打印信息
+def print_welcome():
+    print("EQTTS - SERVER v0.0.1_Pre-1 by Luyii")
+    print("GitHub: luyii-code-1")
+    print("WebSite: https://luyii.cn")
+    print("BiliBili: luyii-code")
+    print("Mail: root@luyii.cn")
+    print("Please use GitHub Issues to report bugs. The exception to the Mountain code!")
 
-
-#    def on_open(ws):
- #       print("Connection opened")
-  ## 
-    ## 定义接收到服务器消息时的回调函数 
-    #def on_message(ws_cenc, message):
-    #    receive_cenc = {message}
-    #    if receive_cenc['type'] == "cenc_eqlist":
-    #        print("有效内容")
-    #    else:
-    #        print(receive_cenc['type'])
-   #
-    # 定义连接关闭时的回调函数 
-    #def on_close(ws_cenc):
-    #    print("Connection closed")
-    
-    # 定义遇到错误时的回调函数 
-    #def on_error(ws_cenc, error):
-    #    print(f"Error occurred: {error}")
-    
-    # 创建WebSocket连接 
-    #ws_cenc = websocket.WebSocketApp("wss://ws-api.wolfx.jp/cenc_eqlist", 
-     #                           on_open=on_open,
-      #                          on_message=on_message,
-       #                        on_error=on_error)
-    
-    # 消息：{message}
-
-#    print("EQTTS - SERVER v0.0.1_Pre-1 by Luyii")
- #  ws_cenc.run_forever()
-  #  while(ture):
-   #     ws_cenc.send = "query_cenceqlist"
-    #    sleep(200)
-语言组织 = ""
-
-print("EQTTS - SERVER v0.0.1_Pre-1 by Luyii")
-print("GitHub:luyii-code-1")
-print("WebSite:https://luyii.cn")
-print("BiliBili:luyii-code")
-print("Mail:root@luyii.cn")
-print("Please use GitHub Issuse to report bugs. The exception to the Mountain code!")
-
-#初始化
-#屎山#01
-print("初始化...")
-url_CENC = "https://api.wolfx.jp/cenc_eqlist.json"
-try:
-    rec_cenc = requests.get(url_CENC)
-except rec_cenc.status_code != 200:#屎山02
-    print("请求失败:{response.status_code}")#屎山02
-except requests.exceptions.ConnectionError:#屎山02
-        print("无网络连接?")#屎山02
-json_CENC = rec_cenc.json() 
-no1 = json_CENC["No1"]
-location_newest = no1["location"]
-magnitude_newest = no1["magnitude"]
-intensity_newest = no1["intensity"]
-type_newest = no1["type"]
-#屎山#01
-#print("检查历史缓存")#屎山03
-#try:#屎山03
-#    with open('lastest.ini',  'r') as file:#屎山03
-#        lastest = file.read()#屎山03
-#except FileNotFoundError:#屎山03
-#    print("No Such File,Creative")#屎山03
-#    # file.write(str(no1))#屎山03
-#if lastest != no1:#屎山03
-#    newstatus = 0#屎山03
-#else:#屎山03
-#    newstatus = 1#屎山03
-#    # file.write(str(no1))#屎山03 ?没有实现效果，懒得删了~
-no1 = json_CENC["No1"]
-location_newest = no1["location"]
-magnitude_newest = no1["magnitude"]
-intensity_newest = no1["intensity"]
-type_newest = no1["type"]
-if type_newest == "reviewed":
-    saytype_newest = "正式测定"
-else:
-    saytype_newest = "自动测定"   
-tmp2 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
-if 语言组织 == tmp2:
-    new = 0
-    print("no new ,wait 1s")
-    time.sleep(1)
-else:
-    new = 1
-语言组织 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
-
+# 获取API数据
 def get_cenc():
     print("请求API...")
-    url_CENC = "https://api.wolfx.jp/cenc_eqlist.json"
-    print("请求API...")
-    try:#屎山02        
-        rec_cenc = requests.get(url_CENC)#屎山02
-    except rec_cenc.status_code != 200:#屎山02
-        print("请求失败:{response.status_code}")#屎山02
-    except requests.exceptions.ConnectionError:#屎山02
-        print("无网络连接?")#屎山02
+    try:
+        response = requests.get(URL_CENC)
+        response.raise_for_status()  # 如果请求失败，会抛出异常
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"请求失败: {e}")
+        return None
 
-    json_CENC = rec_cenc.json() 
-
-def jiexi():
-    print("解析...")
-    no1 = json_CENC["No1"]
-    location_newest = no1["location"]
-    magnitude_newest = no1["magnitude"]
-    intensity_newest = no1["intensity"]
-    type_newest = no1["type"]
-    if type_newest == "reviewed":
-        saytype_newest = "正式测定"
-    else:
-        saytype_newest = "自动测定"   
-    tmp2 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级,预估最大烈度'+intensity_newest+'度.'
-    #if 语言组织 == tmp2:#屎山04
-    #    new = 0
-    #   print("no new ,wait 1s")
-     #   time.sleep(1)
-    #else:
-    new = 1
-    语言组织 = '中国地震台网'+saytype_newest+',震中在'+location_newest+',规模'+magnitude_newest+'级级,预估最大烈度'+intensity_newest+'度.'
+# 解析地震信息
+def parse_data(json_data):
+    if json_data is None:
+        return None
     
+    no1 = json_data.get(LANGUAGE_KEY, {})
+    location = no1.get("location", "未知位置")
+    magnitude = no1.get("magnitude", "未知")
+    intensity = no1.get("intensity", "未知")
+    type_newest = no1.get("type", "未知")
+    
+    if type_newest == "reviewed":
+        say_type = "正式测定"
+    else:
+        say_type = "自动测定"
+    
+    return f'中国地震台网{say_type},震中在{location},规模{magnitude}级,预估最大烈度{intensity}度.'
 
-def getTTS(text):
-    if new == 1:
-        print("获取朗读音频...")
-        # 使用双引号包裹 text，并转义其中的双引号
-        com_t1 = f"edge-tts --voice zh-CN-YunyangNeural --text "+text+" --write-media tts.mp3"
-        print(com_t1)
-        os.system(str(com_t1)) 
+# 获取并生成TTS
+def get_tts(text):
+    print("获取朗读音频...")
+    command = f"edge-tts --voice zh-CN-YunyangNeural --text \"{text}\" --write-media {TTS_FILE}"
+    print(command)
+    os.system(command)
 
+# 检查历史缓存
+def check_old_data():
+    try:
+        with open('lastest.ini', 'r') as file:
+            lastest = file.read()
+        return lastest
+    except FileNotFoundError:
+        print("No Such File, Creating New File.")
+        return None
 
-def checkold():#屎山03
-    print("检查历史缓存")#屎山03
-    try:#屎山03
-        with open('lastest.ini',  'r') as file:#屎山03
-            lastest = file.read()#屎山03
-    except FileNotFoundError:#屎山03
-        print("No Such File,Creative")#屎山03
-        file.write(str(no1))#屎山03
+# 更新历史缓存
+def update_old_data(data):
+    with open('lastest.ini', 'w') as file:
+        file.write(str(data))
 
+# 更新状态文件
+def set_update_status(status):
+    # 更新 status.json 文件的状态
+    with open(STATUS_FILE, "w") as file:
+        json.dump({"status": status}, file)
 
+# 主功能
+def main_loop():
+    print_welcome()
+    
+    prev_data = None
+    update_time = None
 
+    json_data = get_cenc()
+    parsed_data = parse_data(json_data)
+        
+    if parsed_data != prev_data:
+        print("新数据获取成功！")
+        get_tts(parsed_data)
+        prev_data = parsed_data
+            
+        # 设置 status.json 状态为 1，表示更新完成
+        set_update_status(1)
+            
+        # 等待5分钟后恢复为 0，表示状态恢复
+        print("状态设置为 1，等待 1 分钟后恢复...")
+        set_update_status(0)
+        print("状态恢复为 0")
+    else:
+        print("无新数据，等待1秒...")
+        
+        time.sleep(2)  # 每隔2秒检查一次
 
-def new_func(语言组织, get_cenc, jiexi, getTTS):
-    print("启动服务")
-    while(True):
-        get_cenc()
-        jiexi()
-        getTTS(语言组织)
-        time.sleep(2)
-######这里才是程序开始######
-new_func(语言组织, get_cenc, jiexi, getTTS)
+main_loop()

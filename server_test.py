@@ -1,10 +1,14 @@
 import requests
 import os
 import time
+import json
+from datetime import datetime, timedelta
 
 # 定义常量
 URL_CENC = "https://api.wolfx.jp/cenc_eqlist.json"
 LANGUAGE_KEY = 'No1'
+TTS_FILE = "tts.mp3"
+STATUS_FILE = "status.json"
 
 # 打印信息
 def print_welcome():
@@ -47,7 +51,7 @@ def parse_data(json_data):
 # 获取并生成TTS
 def get_tts(text):
     print("获取朗读音频...")
-    command = f"edge-tts --voice zh-CN-YunyangNeural --text \"{text}\" --write-media tts.mp3"
+    command = f"edge-tts --voice zh-CN-YunyangNeural --text \"{text}\" --write-media {TTS_FILE}"
     print(command)
     os.system(command)
 
@@ -66,11 +70,18 @@ def update_old_data(data):
     with open('lastest.ini', 'w') as file:
         file.write(str(data))
 
+# 更新状态文件
+def set_update_status(status):
+    # 更新 status.json 文件的状态
+    with open(STATUS_FILE, "w") as file:
+        json.dump({"status": status}, file)
+
 # 主功能
 def main_loop():
     print_welcome()
     
     prev_data = None
+    update_time = None
     while True:
         json_data = get_cenc()
         parsed_data = parse_data(json_data)
@@ -80,6 +91,15 @@ def main_loop():
             get_tts(parsed_data)
             prev_data = parsed_data
             update_old_data(parsed_data)
+            
+            # 设置 status.json 状态为 1，表示更新完成
+            set_update_status(1)
+            
+            # 等待5分钟后恢复为 0，表示状态恢复
+            print("状态设置为 1，等待 1 分钟后恢复...")
+            time.sleep(60)  # 等待 5 分钟
+            set_update_status(0)
+            print("状态恢复为 0")
         else:
             print("无新数据，等待1秒...")
         
