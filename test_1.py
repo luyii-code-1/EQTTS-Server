@@ -180,9 +180,8 @@ def checkold():#屎山03
 
 def new_func(语言组织, get_cenc, jiexi, getTTS):
     print("启动服务")
-    while(True):
-        get_cenc()
-        jiexi()
-        getTTS(语言组织)
+    get_cenc()
+    jiexi()
+    getTTS(语言组织)
 ######这里才是程序开始######
 new_func(语言组织, get_cenc, jiexi, getTTS)
