@@ -99,7 +99,7 @@ def main_loop():
         set_update_status(0)
         print("状态恢复为 0")
     else:
-        print("无新数据，等待1秒...")
+        print("无新数据，等待2秒...")
         
         time.sleep(2)  # 每隔2秒检查一次
 
